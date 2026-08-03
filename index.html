@@ -81,6 +81,7 @@ h3{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:
 h3 svg{flex:none;color:var(--gold-deep)}
 .sub{color:var(--mut);font-size:15.5px;margin-bottom:16px}
 .rule-list{list-style:none;margin:8px 0 4px}
+.mod-art{display:block;width:100%;height:auto;margin:12px 0 6px;border:2px solid var(--ink);background:#fff;box-shadow:4px 4px 0 rgba(20,20,22,.12)}
 .rule-list li{padding:9px 0 9px 30px;position:relative;border-bottom:1px dashed var(--line);font-size:16px}
 .rule-list li:last-child{border-bottom:none}
 .rule-list li::before{content:"";position:absolute;left:3px;top:16px;width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
@@ -697,6 +698,121 @@ function startFlow(){
 /* ---------------- STEP 1 · NEO Orientation ---------------- */
 let dwellTimer = null, dwellLeft = 0, moduleEnteredAt = null;
 
+/* ---------------- training illustrations (inline SVG, signage style) ---------------- */
+const AF = `font-family='Oswald,sans-serif' font-weight='600' letter-spacing='.08em'`;
+const ART = {
+
+pull: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pull station colors: fire red, severe weather green, chemical yellow">
+<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">PULL STATION COLORS</text>
+${[['#bf372a','FIRE',110],['#2e7d46','SEVERE WEATHER',330],['#e9b10c','CHEMICAL',550]].map(([c,l,x])=>`
+<g>
+<rect x="${x-52}" y="44" width="104" height="96" fill="${c}" stroke="#141416" stroke-width="3"/>
+<rect x="${x-30}" y="60" width="60" height="52" rx="4" fill="#fff" stroke="#141416" stroke-width="2.5"/>
+<rect x="${x-6}" y="66" width="12" height="26" rx="3" fill="#141416"/>
+<rect x="${x-20}" y="90" width="40" height="9" rx="3" fill="#141416"/>
+<text x="${x}" y="130" text-anchor="middle" ${AF} font-size="11" fill="${c==='#e9b10c'?'#231f10':'#fff'}">PULL</text>
+<text x="${x}" y="164" text-anchor="middle" ${AF} font-size="13" fill="#141416">${l}</text>
+</g>`).join('')}
+</svg>`,
+
+forklift: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Near a forklift: stop, speak, see, signal">
+<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">NEAR A FORKLIFT</text>
+${[['STOP',95],['SPEAK',252],['SEE',409],['SIGNAL',566]].map(([l,x],i)=>`
+<g>
+<circle cx="${x}" cy="94" r="42" fill="${i===0?'#bf372a':'#fff'}" stroke="#141416" stroke-width="3"/>
+${i===0?`<polygon points="${x-18},${94-8} ${x-8},${94-18} ${x+8},${94-18} ${x+18},${94-8} ${x+18},${94+8} ${x+8},${94+18} ${x-8},${94+18} ${x-18},${94+8}" fill="#fff"/>`:''}
+${i===1?`<path d="M${x-18} ${94-12} h36 v20 h-22 l-8 9 v-9 h-6 z" fill="none" stroke="#141416" stroke-width="3" stroke-linejoin="round"/>`:''}
+${i===2?`<path d="M${x-22} 94 q22 -20 44 0 q-22 20 -44 0 z" fill="none" stroke="#141416" stroke-width="3"/><circle cx="${x}" cy="94" r="7" fill="#141416"/>`:''}
+${i===3?`<path d="M${x-4} ${94+16} v-26 m-9 26 v-22 m18 22 v-22 m9 20 v-14 m-31 -6 q-7 -12 4 -14 l14 -3 v-6 q0 -6 6 -6 t6 6 v20" fill="none" stroke="#141416" stroke-width="3" stroke-linecap="round"/>`:''}
+<text x="${x}" y="164" text-anchor="middle" ${AF} font-size="13" fill="#141416">${l}</text>
+${i<3?`<path d="M${x+52} 94 h44 m-10 -7 l10 7 l-10 7" stroke="#d4a72c" stroke-width="4" fill="none"/>`:''}
+</g>`).join('')}
+</svg>`,
+
+lift: `<svg class="mod-art" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Safe lifting: keep the load in the power zone, lift with your legs">
+<rect x="30" y="76" width="240" height="58" fill="#f8ecc8" stroke="#d4a72c" stroke-width="2" stroke-dasharray="7 5"/>
+<text x="150" y="70" text-anchor="middle" ${AF} font-size="13" fill="#b98f1d">POWER ZONE</text>
+<text x="150" y="150" text-anchor="middle" ${AF} font-size="10" fill="#6b675c">MID-THIGH TO MID-CHEST</text>
+<g stroke="#141416" stroke-width="5" stroke-linecap="round" fill="none">
+<circle cx="150" cy="46" r="13" fill="#141416" stroke="none"/>
+<path d="M150 60 v34"/><path d="M150 94 q-6 26 -26 40 m26 -40 q6 26 26 40"/>
+<path d="M150 66 q-22 10 -26 34 m26 -34 q22 10 26 34"/>
+</g>
+<rect x="112" y="92" width="76" height="34" fill="#d4a72c" stroke="#141416" stroke-width="3"/>
+<g ${AF} font-size="13" fill="#141416">
+<text x="340" y="66">LOAD CLOSE TO YOUR BODY</text>
+<text x="340" y="104">LIFT WITH YOUR LEGS, NEVER YOUR BACK</text>
+<text x="340" y="142">MOVE YOUR FEET, DO NOT TWIST</text>
+</g>
+<g stroke="#2e7d46" stroke-width="4" fill="none" stroke-linecap="round">
+<path d="M318 60 l6 7 l11 -13"/><path d="M318 98 l6 7 l11 -13"/><path d="M318 136 l6 7 l11 -13"/>
+</g>
+</svg>`,
+
+ppe: `<svg class="mod-art" viewBox="0 0 660 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Required PPE head to toe">
+<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">REQUIRED HEAD TO TOE</text>
+<g stroke="#141416" stroke-width="4.5" stroke-linecap="round" fill="none">
+<circle cx="330" cy="70" r="15" fill="#fff"/>
+<path d="M312 62 a19 12 0 0 1 36 0" fill="#d4a72c" stroke-width="3"/>
+<path d="M330 86 v52"/><path d="M330 100 h-30 m30 0 h30"/>
+<path d="M330 138 l-16 46 m16 -46 l16 46"/>
+<path d="M320 60 h20" stroke="#1f6fb2" stroke-width="3"/>
+</g>
+<rect x="308" y="182" width="16" height="8" fill="#141416"/><rect x="336" y="182" width="16" height="8" fill="#141416"/>
+${[['BUMP CAP',52,58,300,58],['SAFETY GLASSES',52,96,312,64],['HEARING PROTECTION',480,58,348,66],['GLOVES · TASK-RATED',480,104,364,100],['SLIP-RESISTANT CLOSED-TOE',480,186,354,186]].map(([l,tx,ty,lx,ly])=>`
+<line x1="${tx<330?tx+120:tx-4}" y1="${ty-4}" x2="${lx}" y2="${ly}" stroke="#b98f1d" stroke-width="1.6"/>
+<text x="${tx}" y="${ty}" ${AF} font-size="12" fill="#141416">${l}</text>`).join('')}
+</svg>`,
+
+routes: `<svg class="mod-art" viewBox="0 0 660 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chemicals enter the body four ways: inhalation, absorption, ingestion, ocular">
+<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">4 ROUTES OF ENTRY</text>
+${[['INHALATION',95],['ABSORPTION',252],['INGESTION',409],['OCULAR',566]].map(([l,x],i)=>`
+<g>
+<circle cx="${x}" cy="90" r="38" fill="#ecf3fa" stroke="#141416" stroke-width="3"/>
+${i===0?`<path d="M${x} ${90-20} v18 m0 0 q-14 2 -14 16 q0 8 8 8 q7 0 7 -9 m-1 -15 q14 2 14 16 q0 8 -8 8 q-7 0 -7 -9" stroke="#141416" stroke-width="3" fill="none" stroke-linecap="round"/>`:''}
+${i===1?`<path d="M${x-4} ${90+20} v-24 m-8 24 v-20 m16 20 v-20 m8 18 v-13 m-28 -5 q-6 -10 3 -12 l13 -3 v-5 q0 -5 5 -5 t5 5 v18" stroke="#141416" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="${x+2}" cy="${90-16}" r="3" fill="#1f6fb2"/>`:''}
+${i===2?`<path d="M${x-16} ${90-2} q16 16 32 0" stroke="#141416" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="${x}" cy="${90-14}" r="4" fill="#1f6fb2"/><path d="M${x} ${90-10} v6" stroke="#1f6fb2" stroke-width="2.5"/>`:''}
+${i===3?`<path d="M${x-20} 90 q20 -18 40 0 q-20 18 -40 0 z" stroke="#141416" stroke-width="3" fill="#fff"/><circle cx="${x}" cy="90" r="7" fill="#141416"/><circle cx="${x+10}" cy="${90-16}" r="3.5" fill="#1f6fb2"/>`:''}
+<text x="${x}" y="154" text-anchor="middle" ${AF} font-size="12.5" fill="#141416">${l}</text>
+</g>`).join('')}
+</svg>`,
+
+gown: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Remove hair net before break areas, apply a new one at the gowning station before production areas">
+<g>
+<rect x="28" y="34" width="284" height="118" fill="#fbeeec" stroke="#bf372a" stroke-width="3"/>
+<text x="170" y="62" text-anchor="middle" ${AF} font-size="14" fill="#bf372a">REMOVE BEFORE</text>
+<path d="M148 92 a22 13 0 0 1 44 0 z" fill="none" stroke="#141416" stroke-width="3"/>
+<path d="M144 78 l52 30 m0 -30 l-52 30" stroke="#bf372a" stroke-width="4" stroke-linecap="round"/>
+<text x="170" y="136" text-anchor="middle" ${AF} font-size="11.5" fill="#141416">RESTROOM · BREAK · SMOKING AREA</text>
+</g>
+<path d="M322 93 h30 m-8 -7 l8 7 l-8 7" stroke="#d4a72c" stroke-width="4" fill="none"/>
+<g>
+<rect x="362" y="34" width="284" height="118" fill="#ecf6ef" stroke="#2e7d46" stroke-width="3"/>
+<text x="504" y="62" text-anchor="middle" ${AF} font-size="14" fill="#2e7d46">APPLY NEW AT GOWNING STATION</text>
+<path d="M482 96 a22 13 0 0 1 44 0 z" fill="#fff" stroke="#141416" stroke-width="3"/>
+<path d="M482 96 a22 13 0 0 0 44 0" fill="none" stroke="#141416" stroke-width="2" stroke-dasharray="4 3"/>
+<text x="504" y="136" text-anchor="middle" ${AF} font-size="11.5" fill="#141416">MANUFACTURING · WEIGH ROOM · COMPOUNDING</text>
+</g>
+</svg>`,
+
+pallet: `<svg class="mod-art" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stack pallets no more than seven high, CHEP pallets are a two person lift">
+${[0,1,2,3,4,5,6].map(i=>`<g transform="translate(120 ${160-i*19})"><rect width="120" height="13" fill="${i%2?'#f1eee6':'#fff'}" stroke="#141416" stroke-width="2.5"/><line x1="40" y1="0" x2="40" y2="13" stroke="#141416" stroke-width="2"/><line x1="80" y1="0" x2="80" y2="13" stroke="#141416" stroke-width="2"/></g>`).join('')}
+<path d="M262 40 h34 m-34 133 h34 m-17 -133 v133" stroke="#bf372a" stroke-width="3"/>
+<text x="308" y="112" ${AF} font-size="16" fill="#bf372a">7 MAX</text>
+<g>
+<rect x="420" y="58" width="120" height="14" fill="#1f6fb2" stroke="#141416" stroke-width="2.5"/>
+<g stroke="#141416" stroke-width="4" stroke-linecap="round" fill="none">
+<circle cx="404" cy="40" r="9" fill="#141416" stroke="none"/><path d="M404 50 v26 m0 -20 l18 8"/>
+<circle cx="556" cy="40" r="9" fill="#141416" stroke="none"/><path d="M556 50 v26 m0 -20 l-18 8"/>
+</g>
+<text x="480" y="106" text-anchor="middle" ${AF} font-size="13" fill="#141416">CHEP = 2-PERSON LIFT</text>
+<text x="480" y="126" text-anchor="middle" ${AF} font-size="11" fill="#6b675c">WOOD: SLIDE ON SIDE · NEVER THROW</text>
+</g>
+</svg>`
+};
+const NEO_ART = {1:'pull', 2:'forklift', 3:'lift', 5:'ppe', 6:'routes'};
+const SAF_ART = {1:'forklift', 3:'pallet'};
+
 function renderNeo(){
   clearInterval(dwellTimer);
   const mi = state.neo.module;
@@ -718,6 +834,7 @@ function renderNeo(){
       <p class="sub" style="margin-bottom:8px">${lang==='es'?'Orientaci\u00f3n NEO de Seguridad Vi-Jon':'Vi-Jon NEO Safety Orientation'}</p>
       ${esNote()}
       <div style="margin:4px 0 8px">${listenBtn('listenNeo')}</div>
+      ${NEO_ART[mi] ? ART[NEO_ART[mi]] : ''}
       <ul class="rule-list">${m.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
 
       <div class="kcheck">
@@ -808,6 +925,7 @@ function renderSafety(){
     h += `<div class="card fadein"><div class="card-pad" style="padding-top:20px">
       <h3>${I[s.icon]} ${s.title}</h3>
       <div style="margin:2px 0 6px">${listenBtn('lsSaf'+i)}</div>
+      ${SAF_ART[i] ? ART[SAF_ART[i]] : ''}
       <ul class="rule-list ${s.warn?'warn-list':''}">${s.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
       <label class="ack ${state.acks['saf'+i]?'checked':''}">
         <input type="checkbox" ${state.acks['saf'+i]?'checked':''} onchange="ackToggle('saf${i}',this)">
@@ -830,6 +948,7 @@ function renderGowning(){
       <p class="sub">${lang==='es'?'Conservado en su expediente de empleado.':'Retained in your employee file.'}</p>
       ${esNote()}
       <div style="margin:2px 0 10px">${listenBtn('lsGown')}</div>
+      ${ART.gown}
       <h3>${I.hand} Remove before</h3>
       <p style="margin-bottom:16px">${g.remove}</p>
       <h3>${I.hat} Apply fresh before entering</h3>
