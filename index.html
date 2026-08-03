@@ -6,6 +6,7 @@
 <title>Spark Companies | Vi-Jon Associate Onboarding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Jost:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%23141416'/%3E%3Cpath d='M22 5 L10 22 h8 L16 35 L30 16 h-8 Z' fill='%23d4a72c'/%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <style>
 :root{
@@ -17,7 +18,8 @@
   --notice:#1f6fb2; --notice-bg:#ecf3fa;
   --safe:#2e7d46; --safe-bg:#ecf6ef;
   --warn:#d97e1e;
-  --r:6px;
+  --r:0;
+  --shadow:6px 6px 0 rgba(20,20,22,.16);
   --stripe:repeating-linear-gradient(-45deg,var(--ink) 0 10px,var(--gold) 10px 20px);
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -50,17 +52,17 @@ header{background:var(--ink);color:#fff;padding:14px 22px;display:flex;align-ite
 .station{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none;width:82px}
 .station .dot{width:28px;height:28px;border:2px solid #4a4a50;background:var(--char);display:flex;align-items:center;justify-content:center;color:#8b8778;font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;transition:all .25s}
 .station .lbl{font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#8b8778;font-weight:500;text-align:center;line-height:1.2;transition:color .25s}
-.station.done .dot{background:var(--gold);border-color:var(--gold);color:var(--ink)}
-.station.done .lbl{color:#e5cf7c}
-.station.now .dot{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 4px rgba(212,167,44,.2)}
+.station.done .dot{background:#2b2b30;border-color:var(--gold);color:var(--gold)}
+.station.done .lbl{color:#c9b568}
+.station.now .dot{background:var(--gold);border-color:var(--gold);color:var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.5)}
 .station.now .lbl{color:#fff}
-.wire{flex:1;height:2px;background:#3d3d43;min-width:8px;position:relative;top:-11px}
+.wire{flex:1;height:3px;background:#3d3d43;min-width:8px;position:relative;top:-11px}
 .wire.lit{background:var(--gold)}
 
 main{max-width:800px;margin:0 auto;padding:28px 18px 90px}
 
 /* ---------- placard cards ---------- */
-.card{background:var(--card);border:2px solid var(--ink);border-radius:var(--r);padding:0;margin-bottom:20px;overflow:hidden;box-shadow:4px 4px 0 rgba(20,20,22,.12)}
+.card{background:var(--card);border:2.5px solid var(--ink);border-radius:var(--r);padding:0;margin-bottom:22px;overflow:hidden;box-shadow:var(--shadow)}
 .card-pad{padding:24px 26px}
 .signbar{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:2px solid var(--ink)}
 .signbar .sign-word{font-family:'Oswald',sans-serif;font-weight:700;font-size:19px;letter-spacing:.14em;text-transform:uppercase;line-height:1}
@@ -75,8 +77,8 @@ main{max-width:800px;margin:0 auto;padding:28px 18px 90px}
 .mini-stripe{height:6px;background:var(--stripe)}
 
 .eyebrow{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);font-weight:600;margin-bottom:8px}
-h1{font-family:'Oswald',sans-serif;font-size:32px;font-weight:600;line-height:1.1;margin-bottom:8px;text-transform:uppercase;letter-spacing:.02em}
-h2{font-family:'Oswald',sans-serif;font-size:25px;font-weight:600;line-height:1.15;margin-bottom:6px;text-transform:uppercase;letter-spacing:.03em}
+h1{font-family:'Oswald',sans-serif;font-size:34px;font-weight:700;line-height:1.08;margin-bottom:8px;text-transform:uppercase;letter-spacing:.035em}
+h2{font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;line-height:1.12;margin-bottom:6px;text-transform:uppercase;letter-spacing:.045em}
 h3{font-family:'Oswald',sans-serif;font-size:16px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:.08em}
 h3 svg{flex:none;color:var(--gold-deep)}
 .sub{color:var(--mut);font-size:15.5px;margin-bottom:16px}
@@ -103,29 +105,52 @@ h3 svg{flex:none;color:var(--gold-deep)}
 /* ---------- controls ---------- */
 .field{margin-bottom:16px}
 .field label{display:block;font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
-.field input,.field select{width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:4px;background:#fff;transition:box-shadow .15s}
-.field input:focus,.field select:focus{outline:none;box-shadow:3px 3px 0 rgba(212,167,44,.55)}
+.field input,.field select{width:100%;padding:12px 14px;border:2px solid var(--ink);border-radius:0;background:#fff;transition:box-shadow .12s}
+.field input:focus,.field select:focus{outline:none;box-shadow:4px 4px 0 var(--gold)}
+.field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23141416' stroke-width='2.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 26px;border-radius:4px;border:2px solid var(--ink);font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;transition:transform .1s, box-shadow .1s;box-shadow:3px 3px 0 rgba(20,20,22,.85)}
-.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(20,20,22,.85)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 28px;border-radius:0;border:2.5px solid var(--ink);font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:transform .09s, box-shadow .09s;box-shadow:4px 4px 0 var(--ink)}
+.btn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 .btn-gold{background:var(--gold);color:var(--ink)}
 .btn-dark{background:var(--ink);color:#fff}
-.btn-ghost{background:#fff;color:var(--ink);box-shadow:3px 3px 0 rgba(20,20,22,.25)}
+.btn-ghost{background:#fff;color:var(--ink)}
 .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
 .btn-row{display:flex;gap:14px;justify-content:space-between;margin-top:22px;flex-wrap:wrap}
-.ack{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:2px solid var(--ink);border-radius:4px;padding:14px 16px;margin-top:18px;cursor:pointer;transition:background .15s}
+.ack{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:2px solid var(--ink);border-radius:0;padding:14px 16px;margin-top:18px;cursor:pointer;transition:background .15s}
 .ack.checked{background:#f7edcf;box-shadow:inset 4px 0 0 var(--gold)}
 .ack input{width:20px;height:20px;margin-top:2px;accent-color:var(--gold-deep);flex:none}
 .ack span{font-size:15px;font-weight:500}
-.listen{background:#fff;border:2px solid var(--ink);border-radius:999px;color:var(--ink);font-family:'Oswald',sans-serif;font-size:12px;font-weight:500;padding:6px 15px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.12em;text-transform:uppercase}
+/* ---------- access gate ---------- */
+.gate{max-width:600px;margin:30px auto 0;text-align:center}
+.gate-lockup{display:inline-flex;align-items:center;gap:20px;background:#fff;border:2.5px solid var(--ink);padding:16px 30px;box-shadow:6px 6px 0 var(--gold);margin-bottom:26px}
+.gate-lockup img{height:42px;width:auto;display:block}
+.gate-lockup img.gl-vj{height:50px}
+.gate-lockup .gl-div{width:2px;height:44px;background:#e2ded2}
+.gate .eyebrow{margin-bottom:4px}
+.gate h1{font-size:40px;letter-spacing:.05em;margin-bottom:22px}
+.code-cells{display:flex;gap:10px;justify-content:center;position:relative;cursor:text;margin:6px 0 4px}
+.cc{width:52px;height:66px;border:2.5px solid var(--ink);background:#fff;font-family:'IBM Plex Mono',monospace;font-size:31px;font-weight:500;display:flex;align-items:center;justify-content:center;text-transform:uppercase;box-shadow:3px 3px 0 rgba(20,20,22,.14);transition:box-shadow .1s,background .1s}
+.cc.filled{background:#f7edcf}
+.cc.on{box-shadow:4px 4px 0 var(--gold);border-color:var(--ink)}
+.code-hidden{position:absolute;inset:0;opacity:0;border:none;background:none;color:transparent;caret-color:transparent;width:100%;font-size:28px}
+@media(max-width:560px){.cc{width:40px;height:54px;font-size:24px}.gate h1{font-size:31px}.gate-lockup{gap:13px;padding:12px 18px}.gate-lockup img{height:30px}.gate-lockup img.gl-vj{height:36px}}
+.gate-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+@media(max-width:560px){.gate-tiles{grid-template-columns:1fr 1fr 1fr;gap:8px}}
+.gtile{border:2px solid var(--ink);background:#fff;padding:13px 10px 11px;box-shadow:3px 3px 0 rgba(20,20,22,.12)}
+.gtile svg{display:block;margin:0 auto 7px;color:var(--gold-deep)}
+.gtile .gt-l{font-family:'Oswald',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);line-height:1.3}
+.gtile .gt-s{font-size:11.5px;color:var(--mut);margin-top:2px}
+.listen{background:#fff;border:2px solid var(--ink);border-radius:0;color:var(--ink);font-family:'Oswald',sans-serif;font-size:12px;font-weight:600;padding:6px 15px;display:inline-flex;align-items:center;gap:7px;letter-spacing:.14em;text-transform:uppercase;box-shadow:2.5px 2.5px 0 rgba(20,20,22,.5)}
+.listen:active{transform:translate(2px,2px);box-shadow:none}
 .listen.playing{background:var(--gold)}
 
 /* ---------- badge card (check-in) ---------- */
-.badge-card{background:var(--ink);color:#fff;border-radius:10px;padding:0;overflow:hidden;max-width:420px;margin:6px auto 22px;box-shadow:6px 6px 0 rgba(20,20,22,.15)}
+.badge-card{background:var(--ink);color:#fff;border-radius:0;border:2.5px solid var(--ink);padding:0;overflow:hidden;max-width:420px;margin:6px auto 22px;box-shadow:6px 6px 0 rgba(20,20,22,.28)}
 .badge-stripe{height:10px;background:var(--stripe)}
 .badge-body{display:flex;gap:16px;padding:18px 20px 16px;align-items:center}
-.badge-avatar{width:64px;height:64px;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;border-radius:6px;flex:none;letter-spacing:.02em}
+.badge-avatar{width:64px;height:64px;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;border-radius:0;flex:none;letter-spacing:.02em}
 .badge-info{min-width:0}
 .badge-role{font-family:'Oswald',sans-serif;font-size:10.5px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:3px}
 .badge-nm{font-family:'Oswald',sans-serif;font-size:21px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -145,10 +170,11 @@ h3 svg{flex:none;color:var(--gold-deep)}
 .kc-feedback.no{color:var(--danger)}
 
 /* ---------- quiz ---------- */
-.q{border:2px solid var(--ink);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;background:#fff;box-shadow:3px 3px 0 rgba(20,20,22,.1)}
+.q{border:2px solid var(--ink);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;background:#fff;box-shadow:4px 4px 0 rgba(20,20,22,.14)}
 .q-num{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.2em;color:var(--gold-deep);font-weight:600;text-transform:uppercase;margin-bottom:6px}
 .q-text{font-weight:600;font-size:16.5px;margin-bottom:12px}
-.opt{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:2px solid var(--line);border-radius:4px;margin-bottom:9px;cursor:pointer;transition:all .12s;font-size:15.5px;background:#fff}
+.opt{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:2px solid var(--line);border-radius:0;margin-bottom:9px;cursor:pointer;transition:all .12s;font-size:15.5px;background:#fff}
+.opt:active{transform:translateX(2px)}
 .opt:hover{border-color:var(--ink)}
 .opt.sel{border-color:var(--ink);background:#f7edcf;box-shadow:inset 4px 0 0 var(--gold)}
 .opt .key{font-family:'Oswald',sans-serif;font-weight:600;color:var(--gold-deep);flex:none;font-size:14px;width:20px}
@@ -177,9 +203,9 @@ h3 svg{flex:none;color:var(--gold-deep)}
 .doc ul li::before{content:"";position:absolute;left:2px;top:11px;width:9px;height:9px;border:2.5px solid var(--danger)}
 
 /* ---------- completion / gate pass ---------- */
-.stamp{display:inline-block;border:4px solid var(--safe);color:var(--safe);font-family:'Oswald',sans-serif;font-weight:700;font-size:30px;letter-spacing:.2em;text-transform:uppercase;padding:10px 30px;transform:rotate(-4deg);margin:8px 0 14px}
+.stamp{display:inline-block;border:5px double var(--safe);color:var(--safe);font-family:'Oswald',sans-serif;font-weight:700;font-size:31px;letter-spacing:.22em;text-transform:uppercase;padding:10px 32px;transform:rotate(-3.5deg);margin:8px 0 14px;background:rgba(46,125,70,.05)}
 .stamp.bad{border-color:var(--danger);color:var(--danger)}
-.rec{background:var(--ink);color:#e8e4d8;border-radius:8px;padding:0;margin-top:18px;overflow:hidden;text-align:left}
+.rec{background:var(--ink);color:#e8e4d8;border-radius:0;padding:0;margin-top:18px;overflow:hidden;text-align:left;box-shadow:var(--shadow)}
 .rec-head{background:var(--stripe);height:8px}
 .rec-inner{padding:20px 24px}
 .rec h3{color:var(--gold);font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
@@ -223,8 +249,8 @@ footer{text-align:center;color:#a39e8f;font-size:12.5px;padding:0 18px 26px;lett
 
 <main id="main"></main>
 
-<footer id="foot">Test build &middot; records held in this session only &middot; Supabase + PDF packet wiring at deploy</footer>
-<button class="admin-link" onclick="showAdmin()" id="adminBtn">session records</button>
+<footer id="foot">Spark Companies<sup style="font-size:8px">&reg;</sup> &middot; Vi-Jon Associate Onboarding &middot; Training records are retained in your employee file</footer>
+<button class="admin-link" onclick="showAdmin()" id="adminBtn">staff</button>
 
 <script>
 /* =========================================================
@@ -659,39 +685,78 @@ function renderCheckIn(){
   upd();
 }
 function renderAccessGate(prefill){
+  document.querySelector('.stepper').classList.add('hide');
   const urlCode = prefill ?? (new URLSearchParams(location.search).get('c') || '');
+  const pre = normCode(urlCode).slice(0, siteCode.length);
   main.innerHTML = `
-  <div class="card fadein" style="max-width:520px;margin:24px auto">
-    <div class="signbar sign-ink"><span class="sign-word">${lang==='es'?'Acceso':'Access'}</span><span class="sign-note">${lang==='es'?'C\u00f3digo requerido':'Code Required'}</span></div>
-    <div class="card-pad">
-      <h1>${lang==='es'?'Ingrese el c\u00f3digo de acceso':'Enter the access code'}</h1>
-      <p class="sub">${lang==='es'
-        ?'Su reclutador de Spark le proporcion\u00f3 el c\u00f3digo de acceso.'
-        :'Your Spark recruiter gave you the access code.'}</p>
-      <div class="field">
-        <label>${lang==='es'?'C\u00f3digo de acceso':'Access code'}</label>
-        <input id="fCode" value="${normCode(urlCode)}" autocomplete="off" maxlength="8" spellcheck="false"
-          style="font-family:'IBM Plex Mono',monospace;font-size:26px;letter-spacing:.4em;text-align:center;text-transform:uppercase">
+  <div class="gate fadein">
+    <div class="gate-lockup" aria-label="Spark Companies and Vi-Jon">
+      <img src="${LOGO_SPARK}" alt="Spark Companies&reg;">
+      <span class="gl-div" aria-hidden="true"></span>
+      <img src="${LOGO_VIJON}" class="gl-vj" alt="Vi-Jon">
+    </div>
+    <div class="eyebrow">${lang==='es'?'Asociados temporales · Instalaci\u00f3n Vi-Jon':'Temporary Associates · Vi-Jon Facility'}</div>
+    <h1>${lang==='es'?'Incorporaci\u00f3n de Asociados':'Associate Onboarding'}</h1>
+    <div class="card" style="text-align:left">
+      <div class="signbar sign-ink"><span class="sign-word">${lang==='es'?'Acceso':'Access'}</span><span class="sign-note">${lang==='es'?'C\u00f3digo requerido':'Code Required'}</span></div>
+      <div class="card-pad">
+        <p class="sub" style="text-align:center;margin-bottom:14px">${lang==='es'
+          ?'Ingrese el c\u00f3digo de acceso que le dio su reclutador de Spark.'
+          :'Enter the access code your Spark recruiter gave you.'}</p>
+        <div class="code-cells" id="cells" onclick="$('fCode').focus()">
+          ${Array.from({length:siteCode.length},(_,i)=>`<div class="cc" id="cc${i}"></div>`).join('')}
+          <input class="code-hidden" id="fCode" value="" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="${siteCode.length}" aria-label="${lang==='es'?'C\u00f3digo de acceso':'Access code'}">
+        </div>
+        <div class="kc-feedback no" id="codeErr" style="min-height:22px;text-align:center"></div>
+        <button class="btn btn-gold" style="width:100%" onclick="checkCode()">${lang==='es'?'Verificar':'Verify'} ${I.check}</button>
       </div>
-      <div class="kc-feedback no" id="codeErr" style="min-height:22px"></div>
-      <div class="btn-row"><span></span>
-        <button class="btn btn-gold" onclick="checkCode()">${lang==='es'?'Verificar':'Verify'} ${I.check}</button>
+    </div>
+    <div class="gate-tiles">
+      <div class="gtile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        <div class="gt-l">${lang==='es'?'~30 minutos':'~30 Minutes'}</div>
+        <div class="gt-s">${lang==='es'?'8 estaciones':'8 stations'}</div>
+      </div>
+      <div class="gtile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 14v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="13" width="4.5" height="7" rx="1"/><rect x="17" y="13" width="4.5" height="7" rx="1"/></svg>
+        <div class="gt-l">${lang==='es'?'Audio disponible':'Listen Along'}</div>
+        <div class="gt-s">${lang==='es'?'Narraci\u00f3n en cada secci\u00f3n':'Every section narrated'}</div>
+      </div>
+      <div class="gtile">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 2.8 15.4 0 18M12 3c-2.8 2.6-2.8 15.4 0 18"/></svg>
+        <div class="gt-l">EN / ES</div>
+        <div class="gt-s">${lang==='es'?'Cambie arriba a la derecha':'Switch top right'}</div>
       </div>
     </div>
   </div>`;
   const inp = $('fCode');
-  inp.addEventListener('input', ()=>{ inp.value = normCode(inp.value); });
+  const paint = ()=>{
+    const v = normCode(inp.value);
+    inp.value = v;
+    for(let i=0;i<siteCode.length;i++){
+      const c = $('cc'+i);
+      c.textContent = v[i]||'';
+      c.classList.toggle('filled', !!v[i]);
+      c.classList.toggle('on', i===v.length && document.activeElement===inp);
+    }
+    if(v.length===siteCode.length) checkCode();
+    else $('codeErr').textContent='';
+  };
+  inp.addEventListener('input', paint);
+  inp.addEventListener('focus', paint);
+  inp.addEventListener('blur', ()=>{ for(let i=0;i<siteCode.length;i++) $('cc'+i).classList.remove('on'); });
   inp.addEventListener('keydown', e=>{ if(e.key==='Enter') checkCode(); });
-  if(normCode(urlCode).length>=4) checkCode(true);
+  if(pre){ inp.value = pre; paint(); } else { inp.focus(); paint(); }
 }
-function checkCode(silent){
+function checkCode(){
   const code = normCode($('fCode').value);
   const err = $('codeErr');
   if(code !== siteCode){
-    if(!silent) err.textContent = lang==='es'?'C\u00f3digo no reconocido. Verifique con su reclutador de Spark.':'Code not recognized. Check with your Spark recruiter.';
+    if(code.length===siteCode.length) err.textContent = lang==='es'?'C\u00f3digo no reconocido. Verifique con su reclutador de Spark.':'Code not recognized. Check with your Spark recruiter.';
     return;
   }
   state.associate = {name:'', badge:'', agency:'Spark Talent Acquisition', shift:'', code:siteCode};
+  document.querySelector('.stepper').classList.remove('hide');
   renderCheckIn();
 }
 function startFlow(){
