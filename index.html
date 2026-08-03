@@ -82,6 +82,16 @@ h3 svg{flex:none;color:var(--gold-deep)}
 .sub{color:var(--mut);font-size:15.5px;margin-bottom:16px}
 .rule-list{list-style:none;margin:8px 0 4px}
 .mod-art{display:block;width:100%;height:auto;margin:12px 0 6px;border:2px solid var(--ink);background:#fff;box-shadow:4px 4px 0 rgba(20,20,22,.12)}
+.pull-detail{border:2px solid var(--ink);border-left-width:10px;padding:12px 16px;margin:0 0 10px;background:#fff;font-size:15px;line-height:1.5}
+.pull-detail .pd-lbl{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:12.5px;display:block;margin-bottom:3px}
+.match-wrap{border:2px solid var(--ink);background:#fff;padding:14px 16px 16px;margin:12px 0 6px;box-shadow:4px 4px 0 rgba(20,20,22,.12)}
+.match-lbl{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:12.5px;color:var(--mut);margin-bottom:10px}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mbtn{border:2px solid var(--ink);background:#fff;padding:10px 12px;font:500 14px 'Jost',sans-serif;text-align:left;cursor:pointer;transition:background .12s}
+.mbtn.sel{background:var(--gold);border-color:var(--ink)}
+.mbtn.done{background:var(--safe-bg);border-color:var(--safe);color:var(--safe);cursor:default}
+.mbtn.err{background:var(--danger-bg);border-color:var(--danger)}
+.match-done{margin-top:10px;font-weight:600;color:var(--safe);display:flex;align-items:center;gap:8px}
 .rule-list li{padding:9px 0 9px 30px;position:relative;border-bottom:1px dashed var(--line);font-size:16px}
 .rule-list li:last-child{border-bottom:none}
 .rule-list li::before{content:"";position:absolute;left:3px;top:16px;width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
@@ -702,10 +712,10 @@ let dwellTimer = null, dwellLeft = 0, moduleEnteredAt = null;
 const AF = `font-family='Oswald,sans-serif' font-weight='600' letter-spacing='.08em'`;
 const ART = {
 
-pull: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pull station colors: fire red, severe weather green, chemical yellow">
-<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">PULL STATION COLORS</text>
-${[['#bf372a','FIRE',110],['#2e7d46','SEVERE WEATHER',330],['#e9b10c','CHEMICAL',550]].map(([c,l,x])=>`
-<g>
+pull: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pull station colors: fire red, severe weather green, chemical yellow. Tap a station for response steps.">
+<text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">PULL STATION COLORS · TAP EACH ONE</text>
+${[['#bf372a','FIRE',110,'fire'],['#2e7d46','SEVERE WEATHER',330,'weather'],['#e9b10c','CHEMICAL',550,'chem']].map(([c,l,x,k])=>`
+<g onclick="pullDetail('${k}')" style="cursor:pointer" id="pst-${k}">
 <rect x="${x-52}" y="44" width="104" height="96" fill="${c}" stroke="#141416" stroke-width="3"/>
 <rect x="${x-30}" y="60" width="60" height="52" rx="4" fill="#fff" stroke="#141416" stroke-width="2.5"/>
 <rect x="${x-6}" y="66" width="12" height="26" rx="3" fill="#141416"/>
@@ -713,7 +723,8 @@ ${[['#bf372a','FIRE',110],['#2e7d46','SEVERE WEATHER',330],['#e9b10c','CHEMICAL'
 <text x="${x}" y="130" text-anchor="middle" ${AF} font-size="11" fill="${c==='#e9b10c'?'#231f10':'#fff'}">PULL</text>
 <text x="${x}" y="164" text-anchor="middle" ${AF} font-size="13" fill="#141416">${l}</text>
 </g>`).join('')}
-</svg>`,
+</svg>
+<div class="pull-detail" id="pullDetail" style="border-left-color:var(--mut)"><span class="pd-lbl" style="color:var(--mut)">Tap a station above</span>See the exact response steps for each alarm.</div>`,
 
 forklift: `<svg class="mod-art" viewBox="0 0 660 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Near a forklift: stop, speak, see, signal">
 <text x="330" y="26" text-anchor="middle" ${AF} font-size="15" fill="#141416">NEAR A FORKLIFT</text>
@@ -812,6 +823,57 @@ ${[0,1,2,3,4,5,6].map(i=>`<g transform="translate(120 ${160-i*19})"><rect width=
 };
 const NEO_ART = {1:'pull', 2:'forklift', 3:'lift', 5:'ppe', 6:'routes'};
 const SAF_ART = {1:'forklift', 3:'pallet'};
+
+/* Verbatim response steps from the client NEO deck — do not paraphrase. */
+const PULL_INFO = {
+  fire:{color:'var(--danger)', lbl:'Fire — Red', txt:'If you see a fire: <b>1)</b> activate the fire alarm, <b>2)</b> fight or flight — fight only if trained, <b>3)</b> evacuate the building.'},
+  weather:{color:'var(--safe)', lbl:'Severe Weather — Green', txt:'Go to the <b>nearest storm shelter</b> and do not leave until instructed by management or security. Protect your head and neck: sit on the floor, raise your knees, tuck your head, cover the back of your head with your arms crossed over your neck.'},
+  chem:{color:'var(--caution)', lbl:'Chemical — Yellow', txt:'Go to your department\u2019s <b>designated meeting area</b> and stay until given the all-clear.'}
+};
+function pullDetail(k){
+  const d = PULL_INFO[k], el = $('pullDetail');
+  if(!el) return;
+  el.style.borderLeftColor = d.color;
+  el.innerHTML = `<span class="pd-lbl" style="color:${d.color}">${d.lbl}</span>${d.txt}`;
+}
+
+/* Glove matching — pairs verbatim from the Packaging Safety Guidelines. */
+const GLOVES = [
+  ['Nitrile gloves','When open product is handled'],
+  ['Heat-resistant gloves','Near hot surfaces'],
+  ['Cut-resistant gloves','Case sealers, box makers & the Citrate area'],
+  ['Standard work gloves','When handling corrugate']
+];
+let gloveSel = null, gloveDone = [], gloveOrder = null;
+function gloveHtml(){
+  if(!gloveOrder) gloveOrder = [0,1,2,3].sort(()=>Math.random()-.5);
+  return `<div class="match-wrap">
+    <div class="match-lbl">Match the glove to the task — straight from the guideline</div>
+    <div class="match-grid">
+      <div style="display:grid;gap:8px">${GLOVES.map((g,i)=>`<button class="mbtn ${gloveDone.includes(i)?'done':''}" id="gmL${i}" onclick="gloveTapL(${i})">${g[0]}</button>`).join('')}</div>
+      <div style="display:grid;gap:8px">${gloveOrder.map(j=>`<button class="mbtn ${gloveDone.includes(j)?'done':''}" id="gmR${j}" onclick="gloveTapR(${j})">${GLOVES[j][1]}</button>`).join('')}</div>
+    </div>
+    <div class="match-done" id="gmDone" style="display:${gloveDone.length===4?'flex':'none'}">${I.check}<span>All four matched — exactly as the guideline reads.</span></div>
+  </div>`;
+}
+function gloveTapL(i){
+  if(gloveDone.includes(i)) return;
+  gloveSel = i;
+  GLOVES.forEach((_,x)=>{ const b=$('gmL'+x); if(b && !b.classList.contains('done')) b.classList.toggle('sel', x===i); });
+}
+function gloveTapR(j){
+  if(gloveDone.includes(j) || gloveSel===null) return;
+  const L=$('gmL'+gloveSel), R=$('gmR'+j);
+  if(j===gloveSel){
+    gloveDone.push(j);
+    L.classList.remove('sel'); L.classList.add('done'); R.classList.add('done');
+    gloveSel = null;
+    if(gloveDone.length===4) $('gmDone').style.display='flex';
+  } else {
+    R.classList.add('err');
+    setTimeout(()=>R.classList.remove('err'), 450);
+  }
+}
 
 function renderNeo(){
   clearInterval(dwellTimer);
@@ -927,6 +989,7 @@ function renderSafety(){
       <div style="margin:2px 0 6px">${listenBtn('lsSaf'+i)}</div>
       ${SAF_ART[i] ? ART[SAF_ART[i]] : ''}
       <ul class="rule-list ${s.warn?'warn-list':''}">${s.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
+      ${i===4 ? gloveHtml() : ''}
       <label class="ack ${state.acks['saf'+i]?'checked':''}">
         <input type="checkbox" ${state.acks['saf'+i]?'checked':''} onchange="ackToggle('saf${i}',this)">
         <span>${T[lang].understand}</span>
@@ -1438,6 +1501,7 @@ function closeOut(){
 function resetFlow(){
   Object.assign(state,{associate:{name:'',badge:'',agency:'Spark Talent Acquisition',shift:'',code:''},startedAt:null,neo:{module:0,done:[],seconds:{},checks:{}},quiz:{attempts:[],versionsUsed:[],passed:false,finalScore:null,locked:false},acks:{},signature:null,completedAt:null});
   sigDirty=false; currentTest=null; answers=[]; optMaps=[];
+  gloveSel=null; gloveDone=[]; gloveOrder=null;
   document.querySelector('.stepper').classList.remove('hide');
   go(0);
 }
