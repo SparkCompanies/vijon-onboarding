@@ -438,18 +438,59 @@ const GOWNING = {
   areas:['Manufacturing','Weigh Room','Compounding Areas']
 };
 
-const CGMP_TRAINING = [
-  {h:'What cGMP means', p:'cGMP stands for current Good Manufacturing Practices — FDA rules that govern how drug products are made. <b>Everyone is responsible for cGMP</b>, not just QA or management. Everyone is also responsible for cleaning.'},
-  {h:'Drugs vs. cosmetics', p:'A <b>drug product</b> contains an <b>active ingredient</b> — an ingredient that has a direct effect on a person\u2019s body. A product with an active ingredient in its finished form is a drug product. Cosmetics do not contain active ingredients.'},
-  {h:'The FDA', p:'An FDA inspector can visit our plants <b>at any time</b> — no appointment needed. If we don\u2019t comply with cGMPs, the FDA can issue a <b>citation</b>, force a <b>recall</b>, or <b>shut the plant down</b>.'},
-  {h:'SOPs', p:'Standard Operating Procedures are found on the <b>corporate intranet</b>. Follow them exactly.'},
-  {h:'Hygiene & contamination', p:'<b>Wash your hands immediately after using the restroom.</b> Wear a clean uniform or clean agency shirt every day. Put on a hairnet before entering manufacturing, and remove your jewelry. <b>Standing water</b> is one of the best places for bacteria to grow. Facility design plus cleaning and sanitation control contamination.'},
-  {h:'Documentation', p:'<b>Never sign for a step you did not witness.</b> To correct a mistake: draw a <b>single line</b> through it, initial and date the correction, and add an explanation if needed. Never white-out, never scribble. Correct documentation gives us <b>traceability</b> if a product is ever recalled.'},
-  {h:'Labels & line clearance', p:'<b>80% of recalls are caused by labeling errors.</b> A line clearance is performed for <b>all packaging changes</b>.'}
+/* CGMP Question Bank — verbatim from the client's "CGMP Question Bank and Answers".
+   a = index of the correct answer from the client's answer key. */
+const CGMP_BANK = [
+  {q:'Where are SOPs found?', o:['Filed in the Quality Assurance Office','In the Department\u2019s Managers Office','On the Corporate Intranet Vern'], a:2},
+  {q:'When can Ditto Marks be used?', o:['When a signature is being repeated on several lines','Never','On any document that is not an SOP.'], a:1},
+  {q:'Who is responsible for cleaning?', o:['Outside Cleaning Company','Clean-up personnel in each department','Everyone'], a:2},
+  {q:'A product with an active ingredient in its finished form', o:['Batch','Component','Drug Product'], a:2},
+  {q:'When should a line clearance be performed?', o:['At the end of the shift.','When there is a label change','For all packaging changes'], a:2},
+  {q:'Who regulates GMPs?', o:['Vi-Jon','OSHA','FDA'], a:2},
+  {q:'When can an FDA inspector visit our plants?', o:['Only with an appointment','At any time','On an annual basis'], a:1},
+  {q:'What three things can the FDA do to us if we do not comply with GMP\u2019s?', o:['Plant Shutdown, call our customers, fine us','Citation, recall, plant shutdown','Recall, Citation, put us in jail'], a:1},
+  {q:'80% of most recalls are caused by?', o:['Lot Code placement','Labeling errors','Wrong shipping case used'], a:1},
+  {q:'Who is responsible for cGMP?', o:['Everyone','Management','QA/QC and Regulatory Affairs'], a:0},
+  {q:'What is an active ingredient?', o:['Ingredient that has no effect on individual\u2019s body','Ingredient that has direct effect on individual\u2019s body','Ingredient that should not be in the product.'], a:1},
+  {q:'What does FDA stand for?', o:['Federal Drug Agency','Food and Drug Administration','Federal Department of Agriculture'], a:1},
+  {q:'Correct documentation gives us?', o:['No advantage over incorrect documentation','More paperwork to file','Traceability in case there is a recall on the product'], a:2},
+  {q:'What colors of ink should be used to fill out documentation?', o:['Red or green','Blue or Black','Any color'], a:1},
+  {q:'What is one of the best areas for bacteria to grow?', o:['Standing water','Clean dry containers','Sanitized totes'], a:0},
+  {q:'What does FIFO stand for?', o:['Fast in, fast out','First in, first out','First included, first out'], a:1},
+  {q:'What is the difference between our drug products and our cosmetics?', o:['A drug product contains an active ingredient that has a direct effect on a person\u2019s body','A cosmetic product contains an active ingredient that has a direct effect on a person\u2019s body','Nothing this is a trick question'], a:0},
+  {q:'What should you do if someone asks you to verify and sign for a step you did not witness?', o:['Sign the paperwork','Sign the paperwork with someone else\u2019s initials','Don\u2019t sign the paperwork'], a:2},
+  {q:'What is the correct way to correct a mistake on your paperwork?', o:['Use white out to cover the mistake, initial and date the white out and add an explanation if necessary','Draw a single line through the mistake, initial and date the correction and add an explanation if necessary','Scribble out the mistake, initial and date the scribbled out entry and add an explanation if necessary'], a:1},
+  {q:'How far from the wall should pallets be stored?', o:['2 inches','18 inches','36 inches'], a:1},
+  {q:'What items are removed from the line during a line clearance?', o:['The previous packaging materials, labels and product','The conveyors that won\u2019t be used for the next product','Your coworkers'], a:0},
+  {q:'What 2 things can help control contamination?', o:['Smoking and eating in the manufacturing area','Facility design and cleaning and sanitation','Leave the broom and cleaning rags you are using next to the line'], a:1},
+  {q:'What should be removed immediately from the line after use?', o:['Mop and bucket','Samples from the kiosk','Safety glasses'], a:0},
+  {q:'Name 2 things that can lead to contamination?', o:['Talking and laughing with coworkers','Closed doors and good sanitation','Open doors and wooden pallets'], a:2},
+  {q:'What does the \u201cc\u201d stand for in cGMP?', o:['Current','Complete','Correct'], a:0},
+  {q:'What should you remove before entering into the manufacturing area?', o:['Your hairnet','Your jewelry','Your shoes'], a:1},
+  {q:'What should you put on before entering into the manufacturing area?', o:['A hairnet','A baseball cap','Your coat'], a:0},
+  {q:'What food is allowed in the manufacturing area?', o:['Snacks','Cough drops','None'], a:2},
+  {q:'What should you wear to work every day?', o:['Your clean uniform or clean temp agency shirt','Your nice dress shoes','Your favorite dress or suit'], a:0},
+  {q:'What should you do immediately after using the rest room?', o:['Smoke','Return to your work site','Wash your hands'], a:2}
 ];
 
 const TESTS = {
-  1:{ pending:true, name:'cGMP Training Test #1', questions:[] },
+  1:{ name:'cGMP Training Test #1', questions:[
+    {q:'Where are SOPs found?', o:['Filed in the Quality Assurance Office','In the Department\u2019s Managers Office','On the Corporate Intranet Vern'], a:2},
+    {q:'Who is responsible for cleaning?', o:['Outside Cleaning Company','Clean-up personnel in each department','Everyone'], a:2},
+    {q:'A product with an active ingredient in its finished form', o:['Batch','Component','Drug Product'], a:2},
+    {q:'When should a line clearance be performed?', o:['At the end of the shift.','When there is a label change','For all packaging changes'], a:2},
+    {q:'What three things can the FDA do to us if we do not comply with cGMP\u2019s?', o:['Plant Shutdown, call our customers, fine us','Citation, recall, plant shutdown','Recall, Citation, put us in jail'], a:1},
+    {q:'Who is responsible for cGMP?', o:['Everyone','Management','QA/QC and Regulatory Affairs'], a:0},
+    {q:'80% of most recalls are caused by?', o:['Lot Code placement','Labeling errors','Wrong shipping case used'], a:1},
+    {q:'Who regulates cGMP\u2019s?', o:['Vi-Jon','OSHA','FDA'], a:2},
+    {q:'What is an active ingredient?', o:['Ingredient that has no effect on individual\u2019s body','Ingredient that has direct effect on individual\u2019s body','Ingredient that should not be in the product.'], a:1},
+    {q:'Correct documentation gives us?', o:['No advantage over incorrect documentation','More paperwork to file','Traceability in case there is a recall on the product'], a:2},
+    {q:'What is one of the best areas for bacteria to grow?', o:['Standing water','Clean dry containers','Sanitized totes'], a:0},
+    {q:'What should you do if someone asks you to verify and sign for a step you did not witness?', o:['Sign the paperwork','Sign the paperwork with someone else\u2019s initials','Don\u2019t sign the paperwork'], a:2},
+    {q:'What is the correct way to correct a mistake on your paperwork?', o:['Use white out to cover the mistake, initial and date the white out and add an explanation if necessary','Draw a single line through the mistake, initial and date the correction and add an explanation if necessary','Scribble out the mistake, initial and date the scribbled out entry and add an explanation if necessary'], a:1},
+    {q:'What items are removed from the line during a line clearance?', o:['The previous packaging materials, labels and product','The conveyors that won\u2019t be used for the next product','Your coworkers'], a:0},
+    {q:'What should you wear to work every day?', o:['Your clean uniform or clean temp agency shirt','Your nice dress shoes','Your favorite dress or suit'], a:0}
+  ]},
   2:{ name:'cGMP Training Test #2', questions:[
     {q:'What should you do immediately after using the rest room?', o:['Smoke','Return to your work site','Wash your hands'], a:2},
     {q:'What should you wear to work every day?', o:['Your clean uniform or clean temp agency shirt','Your nice dress shoes','Your favorite dress or suit'], a:0},
@@ -1092,22 +1133,41 @@ function renderGowning(){
 }
 
 /* ---------------- STEP 4 · cGMP training ---------------- */
+let bankSeen = [];
 function renderCgmp(){
-  let h = `<div class="card fadein">
+  main.innerHTML = `<div class="card fadein">
     <div class="signbar sign-ink"><span class="sign-word">cGMP</span><span class="sign-note">FDA Regulated Facility</span></div>
     <div class="card-pad">
-      <h2>cGMP Training</h2>
-      <p class="sub">${lang==='es'?'Estudie este material. El examen requiere 80% para aprobar, con un m\u00e1ximo de 2 intentos.':'Study this material. The test that follows requires 80% to pass, with a maximum of 2 attempts.'}</p>
+      <h2>cGMP Question Bank</h2>
+      <p class="sub">${lang==='es'
+        ?'Este es el banco oficial de preguntas del cliente. Toque cada tarjeta para revelar la respuesta correcta. El examen requiere 80% para aprobar, con un m\u00e1ximo de 2 intentos.'
+        :'This is the client\u2019s official question bank — the test draws from it. Tap each card to reveal the correct answer. The test requires 80% to pass, with a maximum of 2 attempts.'}</p>
       ${esNote()}
-      <div class="pending"><b>PENDING FILE:</b> full CGMP Question Bank content replaces this summary when provided.</div>
-      <div style="margin:2px 0 6px">${listenBtn('lsCgmp')}</div>`;
-  CGMP_TRAINING.forEach(s=>{ h += `<h3 style="margin-top:18px">${I.flask} ${s.h}</h3><p>${s.p}</p>`; });
-  h += `<label class="ack ${state.acks.cgmp?'checked':''}" style="margin-top:22px">
+      <div style="margin:2px 0 10px;display:flex;align-items:center;gap:14px">${listenBtn('lsCgmp')}<span class="mono" style="font-size:13px;color:var(--mut)"><b id="bankCnt">${bankSeen.length}</b> / ${CGMP_BANK.length} ${lang==='es'?'revisadas':'revealed'}</span></div>
+      <div style="display:grid;gap:10px">
+        ${CGMP_BANK.map((b,i)=>`
+        <div class="q" style="margin-bottom:0;padding:14px 16px;cursor:pointer" onclick="bankReveal(${i})" id="bk${i}">
+          <div class="q-num">Q${i+1}</div>
+          <div class="q-text" style="margin-bottom:${bankSeen.includes(i)?'8':'0'}px">${b.q}</div>
+          <div id="bkA${i}" style="display:${bankSeen.includes(i)?'block':'none'}">
+            <div style="border-left:4px solid var(--safe);background:var(--safe-bg);padding:9px 13px;font-weight:600;color:var(--safe)">${'ABC'[b.a]}. ${b.o[b.a]}</div>
+          </div>
+          <div id="bkT${i}" class="mono" style="display:${bankSeen.includes(i)?'none':'block'};font-size:11.5px;letter-spacing:.12em;color:var(--gold-deep);margin-top:6px">${lang==='es'?'TOQUE PARA REVELAR':'TAP TO REVEAL'}</div>
+        </div>`).join('')}
+      </div>
+      <label class="ack ${state.acks.cgmp?'checked':''}" style="margin-top:22px">
       <input type="checkbox" ${state.acks.cgmp?'checked':''} onchange="ackToggle('cgmp',this)">
       <span>${lang==='es'?'He estudiado este material y estoy listo para el examen.':'I have studied this material and I\u2019m ready for the test.'}</span>
     </label></div></div>` + navRow(3, 5, ()=>!!state.acks.cgmp);
-  main.innerHTML = h;
-  $('lsCgmp').onclick = function(){ toggleSpeak(this, CGMP_TRAINING.map(s=>s.h+'. '+s.p).join(' '), 'cgmp'); };
+  $('lsCgmp').onclick = function(){ toggleSpeak(this, 'cGMP Question Bank. ' + CGMP_BANK.map((b,i)=>`Question ${i+1}. ${b.q} Answer: ${b.o[b.a]}.`).join(' '), 'cgmp'); };
+}
+function bankReveal(i){
+  if(bankSeen.includes(i)) return;
+  bankSeen.push(i);
+  $('bkA'+i).style.display='block';
+  $('bkT'+i).style.display='none';
+  $('bk'+i).querySelector('.q-text').style.marginBottom='8px';
+  $('bankCnt').textContent = bankSeen.length;
 }
 
 /* ---------------- STEP 5 · Test engine ---------------- */
@@ -1138,7 +1198,7 @@ function renderQuiz(){
         ?`Intento ${attemptNo} de ${MAX_ATTEMPTS} · se requiere ${PASS_PCT}% para aprobar (${Math.ceil(test.questions.length*PASS_PCT/100)} de ${test.questions.length}).`
         :`Attempt ${attemptNo} of ${MAX_ATTEMPTS} · ${PASS_PCT}% required to pass (${Math.ceil(test.questions.length*PASS_PCT/100)} of ${test.questions.length}).`}</p>
       ${esNote()}
-      <div class="pending"><b>NOTE:</b> Test #1 rotates into the pool once the file is provided. Versions rotate and answer order shuffles per attempt.</div>
+      <div class="note"><b>Three test versions rotate.</b> A retake is always a different version, and answer order shuffles every attempt.</div>
     </div>
   </div>`;
   test.questions.forEach((q,qi)=>{
@@ -1221,20 +1281,37 @@ function finishFlagged(){
 }
 
 /* ---------------- STEP 6 · Disclosures ---------------- */
+const LUNCH_DOC = {
+  title:'Lunch Break and Rounding Disclosure \u2013 Nice-Pak',
+  lunch:'<b>Lunch Breaks</b> \u2013 If you work more than 6 hours, you will have a 30-minute lunch break, where half (15 minutes) is unpaid. If you work any time during your scheduled 30-minute lunch break, or do not take a lunch break, please let your AGENCY Representative know by the end of the payroll period to avoid any payroll discrepancies. All times will be verified by the NICE-PAK Management Team for accuracy.',
+  round:'<b>Rounding</b> \u2013 While working on assignment at NICE-PAK, you will be issued a badge and will be required to clock in at the beginning of your shift and out at the end of your shift. Unless you have prior authorization for overtime from NICE-PAK, your in-punch will be rounded to the start of the shift and your out-punch will be rounded to the end of your shift. If you work any time outside of your scheduled shift (+/- 5 minute grace period) please let your AGENCY Representative know by the end of the payroll period to avoid any payroll discrepancies. All times will be verified by the NICE-PAK Management Team for accuracy.',
+  ack1:'I understand that a 15-minute lunch break will be deducted from my time daily, and I will let my AGENCY Representative know by the end of the payroll period in the event I work any time during my scheduled lunch break.',
+  ack2:'In addition, I understand that my in-punch will be rounded to my scheduled shift start time and/or my out-punch will be rounded to the end of my scheduled shift, for any time outside of my scheduled shift time. All exceptions must be approved by NICE-PAK (i.e. starting work early or staying late). I will let my AGENCY Representative know by the end of the payroll period if I worked any NICE-PAK approved overtime.',
+  ack3:'I understand that it is my responsibility to inform All-Star know I have worked any time during my scheduled lunch break, or outside my scheduled shift time, and failure to do so will result in payroll discrepancies that could delay payment for time worked.'
+};
 function renderDisclosures(){
   main.innerHTML = `<div class="card fadein">
     <div class="signbar sign-notice"><span class="sign-word">${lang==='es'?'Divulgaciones':'Disclosure'}</span><span class="sign-note">Retained in File</span></div>
     <div class="card-pad">
-      <h2>${lang==='es'?'Divulgaci\u00f3n de almuerzo y descansos':'Lunch & Break Time Disclosure'}</h2>
+      <h2>${lang==='es'?'Divulgaci\u00f3n de almuerzo y redondeo':'Lunch Break & Rounding Disclosure'}</h2>
       <p class="sub">${lang==='es'?'Conservado en su expediente de empleado.':'Retained in your employee file.'}</p>
-      <div class="pending"><b>PENDING FILE:</b> "Agency &amp; Nice-Pak Disclosure — UPDATED" text drops in here once provided (save it to the same OneDrive spot as the PowerPoint).</div>
-      <div class="doc"><p style="color:var(--mut)">[ Lunch &amp; break time disclosure text — placeholder ]</p></div>
+      ${esNote()}
+      <div style="margin:2px 0 8px">${listenBtn('lsLunch')}</div>
+      <div class="doc">
+        <p><b>${LUNCH_DOC.title}</b></p>
+        <p>${LUNCH_DOC.lunch}</p>
+        <p>${LUNCH_DOC.round}</p>
+        <p>${LUNCH_DOC.ack1}</p>
+        <p>${LUNCH_DOC.ack2}</p>
+        <p>${LUNCH_DOC.ack3}</p>
+      </div>
       <label class="ack ${state.acks.lunch?'checked':''}">
         <input type="checkbox" ${state.acks.lunch?'checked':''} onchange="ackToggle('lunch',this)">
-        <span>${lang==='es'?'He le\u00eddo y entiendo la divulgaci\u00f3n de almuerzo y descansos.':'I have read and understand the Lunch &amp; Break Time Disclosure.'}</span>
+        <span>${lang==='es'?'He le\u00eddo y entiendo la divulgaci\u00f3n de almuerzo y redondeo, y las declaraciones anteriores.':'I have read and understand the Lunch Break & Rounding Disclosure and the statements above.'}</span>
       </label>
     </div>
   </div>` + navRow(5, 7, ()=>!!state.acks.lunch);
+  $('lsLunch').onclick = function(){ toggleSpeak(this, LUNCH_DOC.title+'. '+[LUNCH_DOC.lunch,LUNCH_DOC.round,LUNCH_DOC.ack1,LUNCH_DOC.ack2,LUNCH_DOC.ack3].map(stripHtml).join(' '), 'lunch'); };
 }
 
 /* ---------------- STEP 7 · Security + signature ---------------- */
@@ -1430,7 +1507,7 @@ async function buildPacket(rec){
   kv('Language used', rec.language==='es'?'Spanish':'English');
   y -= 6;
   write('DOCUMENTS COMPLETED AND ACKNOWLEDGED',{size:10,bold:true,color:MUT,gap:6});
-  const docsList = ['NEO Safety Orientation (8 modules, knowledge-checked)','Packaging Safety Guidelines - Required Agency Training','Gowning Instructions','cGMP Training'];
+  const docsList = ['NEO Safety Orientation (8 modules, knowledge-checked)','Packaging Safety Guidelines - Required Agency Training','Gowning Instructions','cGMP Question Bank (30 questions, studied)'];
   if(rec.quiz.attempts.length) docsList.push(`cGMP Training Test - ${rec.quiz.attempts.map(a=>`v${a.version}: ${a.pct}%`).join(', ')}`);
   if(rec.acknowledged.includes('lunch')) docsList.push('Lunch & Break Time Disclosure');
   if(rec.acknowledged.includes('sec')) docsList.push('Building Security Acknowledgment');
@@ -1475,7 +1552,7 @@ async function buildPacket(rec){
   const ackAt = new Date(rec.completedAt).toLocaleString();
   SAFETY_SECTIONS.forEach((s,i)=>{ if(rec.acknowledged.includes('saf'+i)) write(`\u2713  Packaging Safety Guidelines - ${s.title}  \u00B7  acknowledged ${ackAt}`,{gap:3}); });
   if(rec.acknowledged.includes('gown')) write(`\u2713  Gowning Instructions  \u00B7  acknowledged ${ackAt}`,{gap:3});
-  if(rec.acknowledged.includes('cgmp')) write(`\u2713  cGMP Training material  \u00B7  acknowledged ${ackAt}`,{gap:3});
+  if(rec.acknowledged.includes('cgmp')) write(`\u2713  cGMP Question Bank (30 questions)  \u00B7  acknowledged ${ackAt}`,{gap:3});
   if(rec.acknowledged.includes('lunch')) write(`\u2713  Lunch & Break Time Disclosure  \u00B7  acknowledged ${ackAt}`,{gap:3});
   y -= 16;
   await sigBlock('Training acknowledgments');
@@ -1501,7 +1578,7 @@ function renderDone(flagged){
   const r = sessionRecords[rIdx];
   const items = flagged
     ? ['NEO Safety Orientation','Packaging Safety Guidelines','Gowning Instructions','cGMP Training']
-    : ['NEO Safety Orientation','Packaging Safety Guidelines','Gowning Instructions','cGMP Training',`cGMP Test — ${state.quiz.finalScore}% (attempt ${state.quiz.attempts.length})`,'Lunch & Break Time Disclosure','Building Security Acknowledgment','Signature captured'];
+    : ['NEO Safety Orientation','Packaging Safety Guidelines','Gowning Instructions','cGMP Question Bank studied',`cGMP Test — ${state.quiz.finalScore}% (attempt ${state.quiz.attempts.length})`,'Lunch & Break Time Disclosure','Building Security Acknowledgment','Signature captured'];
   document.querySelector('.stepper').classList.add('hide');
   main.innerHTML = `<div class="card fadein">
     <div class="signbar ${flagged?'sign-danger':'sign-safe'}"><span class="sign-word">${flagged?'Not Qualified':'Record Complete'}</span><span class="sign-note">${new Date().toLocaleDateString()}</span></div>
@@ -1566,7 +1643,7 @@ function closeOut(){
 function resetFlow(){
   Object.assign(state,{associate:{name:'',badge:'',agency:'Spark Talent Acquisition',shift:'',code:''},startedAt:null,neo:{module:0,done:[],seconds:{},checks:{}},quiz:{attempts:[],versionsUsed:[],passed:false,finalScore:null,locked:false},acks:{},signature:null,completedAt:null});
   sigDirty=false; currentTest=null; answers=[]; optMaps=[];
-  gloveSel=null; gloveDone=[]; gloveOrder=null;
+  gloveSel=null; gloveDone=[]; gloveOrder=null; bankSeen=[];
   document.querySelector('.stepper').classList.remove('hide');
   go(0);
 }
