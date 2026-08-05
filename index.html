@@ -262,8 +262,8 @@ footer{text-align:center;color:#a39e8f;font-size:12.5px;padding:0 18px 26px;lett
 
 const PASS_PCT = 80;
 const MAX_ATTEMPTS = 2;
-const MODULE_DWELL = 12; // raise for production
-const ADMIN_PIN = '2468'; // test build only — becomes MSAL staff login at deploy
+const MODULE_DWELL = 25; // production: minimum seconds on each NEO module
+const ADMIN_PIN = '7413'; // staff admin PIN
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // no 0/O/1/I/L confusion
 
 const T = {
@@ -302,7 +302,7 @@ const sessionRecords = [];
    HTTP-trigger URL — every completed record auto-POSTs there
    (record JSON + PDF base64) for SharePoint + email + Salesforce. */
 let siteCode = 'VIJON1';
-const SEND_WEBHOOK = ''; // Power Automate flow URL at deploy; blank = simulated send in test build
+const SEND_WEBHOOK = 'https://defaulte806542a6df646ee84c72c03e625e3.91.environment.api.powerplatform.com:443/powerautomate/automations/direct/cu/03/workflows/e26fa14aa36c4572b3cc33fee8b37980/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=HYf7VirXjsgheucff6U8_wwFBmkVdWiSOa8SqZaXTLA'; // Power Automate: ViJon Onboarding Packets
 let adminAuthed = false;
 function genCode(len=6){ let c=''; for(let i=0;i<len;i++) c += CODE_ALPHABET[Math.floor(Math.random()*CODE_ALPHABET.length)]; return c; }
 function normCode(s){ return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
@@ -391,6 +391,7 @@ const NEO = [
   '<b>Lockout/Tagout:</b> temporary associates at Vi-Jon are <b>Affected</b> employees. You may not work on locked-out equipment. You must be able to recognize a lockout event, and you must <b>NEVER restart equipment under lockout or remove locks or tags</b>. Authorized employees carry red personal locks.',
   '<b>Machine guarding:</b> if machine parts move, they can injure and must be guarded. Only Maintenance/Asset Care may remove a guard. Broken guards get reported immediately. Defeating a guard results in disciplinary action.',
   '<b>Confined spaces</b> (tanks, pits, silos, manholes): additional training is required to enter — signs are posted. Stay out.',
+  '<b>Respirators</b> are required in posted hazard areas (including mixing and weighing) and need special training plus medical clearance. <b>Hot work</b> (welding, grinding, torch cutting) is for equipped and authorized personnel only. If a task seems to need either — stop and see your Supervisor.',
   '<b>Bloodborne pathogens:</b> treat all human blood and bodily fluids as infectious. If you find blood, fluids or needles: notify Security, Reception or your Supervisor — the trained Emergency Response team cleans it up, not you. Use the collection boxes in restrooms for needles.'
 ], check:{q:'You find equipment locked out with a red lock. You:', o:['Remove the lock so the line keeps moving','Never restart it or touch the lock or tag','Restart it if your lead is busy'], a:1}}
 ];
@@ -1133,41 +1134,44 @@ function renderGowning(){
 }
 
 /* ---------------- STEP 4 · cGMP training ---------------- */
-let bankSeen = [];
+let bankGot = [];
 function renderCgmp(){
   main.innerHTML = `<div class="card fadein">
     <div class="signbar sign-ink"><span class="sign-word">cGMP</span><span class="sign-note">FDA Regulated Facility</span></div>
     <div class="card-pad">
       <h2>cGMP Question Bank</h2>
       <p class="sub">${lang==='es'
-        ?'Este es el banco oficial de preguntas del cliente. Toque cada tarjeta para revelar la respuesta correcta. El examen requiere 80% para aprobar, con un m\u00e1ximo de 2 intentos.'
-        :'This is the client\u2019s official question bank — the test draws from it. Tap each card to reveal the correct answer. The test requires 80% to pass, with a maximum of 2 attempts.'}</p>
+        ?'Este es el banco oficial de preguntas. Practique cada una — sabr\u00e1 al instante si acert\u00f3. El examen requiere 80% para aprobar, con un m\u00e1ximo de 2 intentos.'
+        :'This is the official question bank the test draws from. Practice each one — you\u2019ll know instantly if you got it right. The test requires 80% to pass, with a maximum of 2 attempts.'}</p>
       ${esNote()}
-      <div style="margin:2px 0 10px;display:flex;align-items:center;gap:14px">${listenBtn('lsCgmp')}<span class="mono" style="font-size:13px;color:var(--mut)"><b id="bankCnt">${bankSeen.length}</b> / ${CGMP_BANK.length} ${lang==='es'?'revisadas':'revealed'}</span></div>
+      <div style="margin:2px 0 10px;display:flex;align-items:center;gap:14px">${listenBtn('lsCgmp')}<span class="mono" style="font-size:13px;color:var(--mut)"><b id="bankCnt">${bankGot.length}</b> / ${CGMP_BANK.length} ${lang==='es'?'correctas':'correct'}</span></div>
       <div style="display:grid;gap:10px">
         ${CGMP_BANK.map((b,i)=>`
-        <div class="q" style="margin-bottom:0;padding:14px 16px;cursor:pointer" onclick="bankReveal(${i})" id="bk${i}">
+        <div class="q" style="margin-bottom:0;padding:14px 16px" id="bk${i}">
           <div class="q-num">Q${i+1}</div>
-          <div class="q-text" style="margin-bottom:${bankSeen.includes(i)?'8':'0'}px">${b.q}</div>
-          <div id="bkA${i}" style="display:${bankSeen.includes(i)?'block':'none'}">
-            <div style="border-left:4px solid var(--safe);background:var(--safe-bg);padding:9px 13px;font-weight:600;color:var(--safe)">${'ABC'[b.a]}. ${b.o[b.a]}</div>
+          <div class="q-text" style="margin-bottom:9px">${b.q}</div>
+          <div style="display:grid;gap:7px">
+            ${b.o.map((o,oi)=>`<button class="mbtn ${bankGot.includes(i)&&oi===b.a?'done':''}" id="bk${i}o${oi}" onclick="bankTry(${i},${oi},this)" ${bankGot.includes(i)?'disabled':''}>${'ABC'[oi]}. ${o}</button>`).join('')}
           </div>
-          <div id="bkT${i}" class="mono" style="display:${bankSeen.includes(i)?'none':'block'};font-size:11.5px;letter-spacing:.12em;color:var(--gold-deep);margin-top:6px">${lang==='es'?'TOQUE PARA REVELAR':'TAP TO REVEAL'}</div>
         </div>`).join('')}
       </div>
       <label class="ack ${state.acks.cgmp?'checked':''}" style="margin-top:22px">
       <input type="checkbox" ${state.acks.cgmp?'checked':''} onchange="ackToggle('cgmp',this)">
       <span>${lang==='es'?'He estudiado este material y estoy listo para el examen.':'I have studied this material and I\u2019m ready for the test.'}</span>
     </label></div></div>` + navRow(3, 5, ()=>!!state.acks.cgmp);
-  $('lsCgmp').onclick = function(){ toggleSpeak(this, 'cGMP Question Bank. ' + CGMP_BANK.map((b,i)=>`Question ${i+1}. ${b.q} Answer: ${b.o[b.a]}.`).join(' '), 'cgmp'); };
+  $('lsCgmp').onclick = function(){ toggleSpeak(this,
+    'The cGMP Question Bank. These are the official questions your test draws from. Work through each card and choose the answer you believe is right — you will see immediately whether you got it. The portal will not show you the answers; earn them here so they are yours on the test. cGMP stands for current Good Manufacturing Practices, the FDA rules for how drug products are made. The test requires eighty percent to pass, with a maximum of two attempts.', 'cgmp'); };
 }
-function bankReveal(i){
-  if(bankSeen.includes(i)) return;
-  bankSeen.push(i);
-  $('bkA'+i).style.display='block';
-  $('bkT'+i).style.display='none';
-  $('bk'+i).querySelector('.q-text').style.marginBottom='8px';
-  $('bankCnt').textContent = bankSeen.length;
+function bankTry(i, oi, el){
+  if(bankGot.includes(i)) return;
+  if(oi === CGMP_BANK[i].a){
+    bankGot.push(i);
+    el.classList.remove('err'); el.classList.add('done');
+    CGMP_BANK[i].o.forEach((_,x)=>{ const b=$('bk'+i+'o'+x); b.disabled=true; if(x!==oi) b.classList.remove('err'); });
+    $('bankCnt').textContent = bankGot.length;
+  } else {
+    el.classList.add('err');
+  }
 }
 
 /* ---------------- STEP 5 · Test engine ---------------- */
@@ -1643,7 +1647,7 @@ function closeOut(){
 function resetFlow(){
   Object.assign(state,{associate:{name:'',badge:'',agency:'Spark Talent Acquisition',shift:'',code:''},startedAt:null,neo:{module:0,done:[],seconds:{},checks:{}},quiz:{attempts:[],versionsUsed:[],passed:false,finalScore:null,locked:false},acks:{},signature:null,completedAt:null});
   sigDirty=false; currentTest=null; answers=[]; optMaps=[];
-  gloveSel=null; gloveDone=[]; gloveOrder=null; bankSeen=[];
+  gloveSel=null; gloveDone=[]; gloveOrder=null; bankGot=[];
   document.querySelector('.stepper').classList.remove('hide');
   go(0);
 }
